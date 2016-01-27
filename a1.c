@@ -15,6 +15,7 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
+#include "Shape.h"
 
 	/* number of lines in the input file */
 int numberLevels = 0;
@@ -23,6 +24,7 @@ int numberLevels = 0;
 int lineDrawing = 1;	// draw polygons as solid or lines
 int lighting = 0;	// use diffuse and specular lighting
 int smoothShading = 0;  // smooth or flat shading
+Shape * shapeList;
 
 
 /*  Initialize material property and light source.
@@ -186,13 +188,13 @@ int count = 0;
 	/* numlevels is set to the number of lines in the file not including the first comment line */
    else {
        while (fgets(instr, sizeof(instr), fp)) {
-           if (instr[0] == '#') {
-               //skip reading in line
-           }
-           else {
+//           if (instr[0] == '#') {
+//               //skip reading in line
+//           }
+//           else {
                printf("%s", instr);
                count++;
-           }
+//           }
        }
        
    }
@@ -208,7 +210,7 @@ int count = 0;
  */
 int main(int argc, char** argv)
 {
-
+    
    readFile(argv);
 
    glutInit(&argc, argv);
