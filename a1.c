@@ -66,25 +66,92 @@ void drawObjects(int level, int numits) {
 	GLfloat red[]   = {1.0, 0.0, 0.0, 1.0};
 	GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
 	GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
+	int currentIterator = 0, xRotate = 0, yRotate = 0, zRotate = 0;
 
 	/* example of drawing an object */
 	/* remove the code after this line and replace it with assignment code */
 	/* set colour of sphere */
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+
 	/* move to location for object then draw it */
 
-	recursiveShape();
-	glPushMatrix ();
-	glTranslatef (0.75, 0.0, -1.0);
-	glutSolidSphere (1.0, 30, 15);	
-	glPopMatrix ();
+	//write scale, rotate, then translate
+	if(level < 0 && level >= numberLevels) {
 
-	glTranslatef (2.0, 4.0, -2.0);
-	glutSolidCube(2);
+		switch((int)shapeList[level][1]) {
+			case 0:
+				//blue
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, blue);
+				break;
+			case 1:
+				//red
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, red);
+				break;
+			case 2:
+				//green
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, green);
+				break;
+			case 3:
+				//white
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+				break;
+		}
+
+		glPushMatrix ();
+
+
+		glScalef(shapeList[level][16], shapeList[level][18], shapeList[level][20]);
+
+		if(shapeList[level][10] != 0.0) {
+			glRotatef(shapeList[level][10], 1, 0, 0);
+		}
+		if(shapeList[level][12] != 0.0) {
+			glRotatef(shapeList[level][12], 0, 1, 0);
+		}
+		if(shapeList[level][14] != 0.0) {
+			glRotatef(shapeList[level][14], 0, 0, 1);
+		}
+		
+
+		glTranslatef(shapeList[level][4], shapeList[level][6], shapeList[level][8]);
+
+		switch((int)shapeList[level][0]) {
+			case 0:
+				//Sphere
+				printf("Sphere\n");
+				break;
+			case 1:
+				//cube
+				printf("Cube\n");
+				break;
+			case 2:
+				//Torus
+				printf("Torus\n");
+				break;
+			case 3:
+				//cone
+				printf("Cone\n");
+				break;
+		}
+
+		glPopMatrix();
+
+
+
+	}
+	// glPushMatrix ();
+	// glTranslatef (0.75, 0.0, -1.0);
+	// glutSolidSphere (1.0, 30, 15);	
+	// glPopMatrix ();
+
+	// glTranslatef (2.0, 4.0, -2.0);
+	// glutSolidCube(2);
 	
-	glTranslatef (2.0, -4.0, 2.0);
-	glutSolidSphere (1.0, 30, 15);
+	// glTranslatef (2.0, -4.0, 2.0);
+	// glutSolidSphere (1.0, 30, 15);
 
 
 
@@ -94,6 +161,7 @@ void drawObjects(int level, int numits) {
 void display (void) {
 
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	int level = 0;
 
 	/* draw surfaces as either smooth or flat shaded */
 	if (smoothShading == 1)
@@ -118,7 +186,7 @@ void display (void) {
 	glTranslatef(0.0, 0.0, -15.0);
 
 	/* function which calls transformations and drawing of objects */
-	drawObjects(0, 0);
+	drawObjects(0,0);
 
 	glPopMatrix ();
 
@@ -201,11 +269,11 @@ int count = 0, entry;
 
 					while (buffer != NULL){
 						shapeList[count][entry] = atof(buffer);
-						printf("%f\n", shapeList[count][entry]);
+						//printf("%f\n", shapeList[count][entry]);
 						entry++;
 						buffer = strtok(NULL, "\t ");
 					}
-					printf("\n");
+					//printf("\n");
 
 					count++;
 			}//end else
@@ -214,6 +282,7 @@ int count = 0, entry;
 	}//end else
 	fclose(fp);
 	numberLevels = count;
+	printf("Count: %d\n", numberLevels);
 	
 }
 
