@@ -24,7 +24,7 @@ int numberLevels = 0;
 int lineDrawing = 1;	// draw polygons as solid or lines
 int lighting = 0;	// use diffuse and specular lighting
 int smoothShading = 0;  // smooth or flat shading
-double shapeList[10][22];
+double shapeList[10][22] = {{-1}};
 
 
 /*  Initialize material property and light source.
@@ -62,10 +62,10 @@ void init (void)
 /* level is number of entries in the file, numits is the number of interations for each entry (column 3 on each
 	line in the file  */
 void drawObjects(int level, int numits) {
-GLfloat blue[]  = {0.0, 0.0, 1.0, 1.0};
-GLfloat red[]   = {1.0, 0.0, 0.0, 1.0};
-GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
-GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat blue[]  = {0.0, 0.0, 1.0, 1.0};
+	GLfloat red[]   = {1.0, 0.0, 0.0, 1.0};
+	GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
+	GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
 
 	/* example of drawing an object */
 	/* remove the code after this line and replace it with assignment code */
@@ -73,17 +73,20 @@ GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 	/* move to location for object then draw it */
+
+	recursiveShape();
 	glPushMatrix ();
 	glTranslatef (0.75, 0.0, -1.0);
-	glutSolidSphere (1.0, 30, 15);
-	 
+	glutSolidSphere (1.0, 30, 15);	
+	glPopMatrix ();
+
 	glTranslatef (2.0, 4.0, -2.0);
 	glutSolidCube(2);
-	 
+	
 	glTranslatef (2.0, -4.0, 2.0);
 	glutSolidSphere (1.0, 30, 15);
-	
-	glPopMatrix ();
+
+
 
 }
 
@@ -170,8 +173,7 @@ void keyboard(unsigned char key, int x, int y)
 	}
 }
 
-
-	/* read data file and store in arrays */
+/* read data file and store in arrays */
 void readFile(char **argv) {
 FILE *fp;
 char instr[1024];
@@ -192,22 +194,24 @@ int count = 0, entry;
 			if (instr[0] == '#') {
 				//skip reading in line
 			}
+
 			else {
-					printf("%s", instr);
 					entry = 0;
 					buffer = strtok(instr, "\t ");
 
 					while (buffer != NULL){
 						shapeList[count][entry] = atof(buffer);
+						printf("%f\n", shapeList[count][entry]);
 						entry++;
 						buffer = strtok(NULL, "\t ");
 					}
+					printf("\n");
 
 					count++;
 			}//end else
 		}//end while
 		
-	}
+	}//end else
 	fclose(fp);
 	numberLevels = count;
 	
