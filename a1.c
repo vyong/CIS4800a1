@@ -67,6 +67,7 @@ void drawObjects(int level, int numits) {
 	GLfloat green[] = {0.0, 1.0, 0.0, 1.0};
 	GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
 	int currentIterator = 0, xRotate = 0, yRotate = 0, zRotate = 0;
+	double xModifier = 0.0, yModifier = 0.0, zModifier = 0.0;
 
 	/* example of drawing an object */
 	/* remove the code after this line and replace it with assignment code */
@@ -75,32 +76,36 @@ void drawObjects(int level, int numits) {
 	/* move to location for object then draw it */
 
 	//write scale, rotate, then translate
-	if(level < 0 && level >= numberLevels) {
+	if(level >= 0 && level < numberLevels) {
 
 		switch((int)shapeList[level][1]) {
 			case 0:
 				//blue
+				//printf("Blue\n");
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
 				glMaterialfv(GL_FRONT, GL_SPECULAR, blue);
 				break;
 			case 1:
 				//red
+				//printf("red\n");
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
 				glMaterialfv(GL_FRONT, GL_SPECULAR, red);
 				break;
 			case 2:
 				//green
+				//printf("green\n");
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
 				glMaterialfv(GL_FRONT, GL_SPECULAR, green);
 				break;
 			case 3:
 				//white
+				//printf("white\n");
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
 				glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 				break;
 		}
 
-		glPushMatrix ();
+		glPushMatrix();
 
 
 		glScalef(shapeList[level][16], shapeList[level][18], shapeList[level][20]);
@@ -121,38 +126,90 @@ void drawObjects(int level, int numits) {
 		switch((int)shapeList[level][0]) {
 			case 0:
 				//Sphere
-				printf("Sphere\n");
+				//printf("Sphere\n\n");
+				glutSolidSphere (shapeList[level][3], 30, 15);
 				break;
 			case 1:
 				//cube
-				printf("Cube\n");
+				//printf("Cube\n\n");
+				glutSolidCube(shapeList[level][3]);
 				break;
 			case 2:
 				//Torus
-				printf("Torus\n");
+				//printf("Torus\n\n");
+				glutSolidTorus(shapeList[level][3]/2, shapeList[level][3], 30, 30);
 				break;
 			case 3:
 				//cone
-				printf("Cone\n");
+				//printf("Cone\n\n");
+				glutSolidCone(shapeList[level][3], shapeList[level][3], 30, 30);
 				break;
 		}
 
+		drawObjects(level + 1, shapeList[level + 1][2]);
+		currentIterator++;
+
+		//This executes the iterators in each line (if any)
+		while (currentIterator < numits) {
+
+			glPushMatrix();
+
+			xModifier = shapeList[level][16] + (shapeList[level][17] * currentIterator);
+			yModifier = shapeList[level][18] + (shapeList[level][19] * currentIterator);
+			zModifier = shapeList[level][20] + (shapeList[level][21] * currentIterator);
+			glScalef(xModifier, yModifier, zModifier);
+
+			xModifier = shapeList[level][10] + (shapeList[level][11] * currentIterator);
+			yModifier = shapeList[level][12] + (shapeList[level][13] * currentIterator);
+			zModifier = shapeList[level][14] + (shapeList[level][15] * currentIterator);
+			if(xModifier != 0.0) {
+				glRotatef(xModifier, 1, 0, 0);
+			}
+			if(yModifier != 0.0) {
+				glRotatef(yModifier, 0, 1, 0);
+			}
+			if(zModifier != 0.0) {
+				glRotatef(zModifier, 0, 0, 1);
+			}
+			
+			xModifier = shapeList[level][4] + (shapeList[level][5] * currentIterator);
+			yModifier = shapeList[level][6] + (shapeList[level][7] * currentIterator);
+			zModifier = shapeList[level][8] + (shapeList[level][9] * currentIterator);
+			glTranslatef(xModifier, yModifier, zModifier);
+
+			switch((int)shapeList[level][0]) {
+				case 0:
+					//Sphere
+					//printf("Sphere\n\n");
+					glutSolidSphere (shapeList[level][3], 30, 15);
+					break;
+				case 1:
+					//cube
+					//printf("Cube\n\n");
+					glutSolidCube(shapeList[level][3]);
+					break;
+				case 2:
+					//Torus
+					//printf("Torus\n\n");
+					glutSolidTorus(shapeList[level][3]/2, shapeList[level][3], 30, 30);
+					break;
+				case 3:
+					//cone
+					//printf("Cone\n\n");
+					glutSolidCone(shapeList[level][3], shapeList[level][3], 30, 30);
+					break;
+			}
+
+			drawObjects(level + 1, shapeList[level + 1][2]);
+			currentIterator++;
+			glPopMatrix();
+		}//end while
 		glPopMatrix();
+	}//end if
 
-
-
+	else {
+		//printf("\n\nEnd Reached!!!!!\n\n");
 	}
-	// glPushMatrix ();
-	// glTranslatef (0.75, 0.0, -1.0);
-	// glutSolidSphere (1.0, 30, 15);	
-	// glPopMatrix ();
-
-	// glTranslatef (2.0, 4.0, -2.0);
-	// glutSolidCube(2);
-	
-	// glTranslatef (2.0, -4.0, 2.0);
-	// glutSolidSphere (1.0, 30, 15);
-
 
 
 }
@@ -186,7 +243,7 @@ void display (void) {
 	glTranslatef(0.0, 0.0, -15.0);
 
 	/* function which calls transformations and drawing of objects */
-	drawObjects(0,0);
+	drawObjects(0,shapeList[0][2]);
 
 	glPopMatrix ();
 
@@ -282,7 +339,7 @@ int count = 0, entry;
 	}//end else
 	fclose(fp);
 	numberLevels = count;
-	printf("Count: %d\n", numberLevels);
+	//printf("Count: %d\n", numberLevels);
 	
 }
 
